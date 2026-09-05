@@ -8,10 +8,16 @@ import { KafkaModule } from './kafka/kafka.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { RedisModule } from './redis/redis.module';
 import { WebsocketModule } from './websocket/websocket.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/analytics'),
+    MongooseModule.forRoot(
+      process.env.MONGODB_URI ?? 'mongodb://localhost:27017/analytics',
+    ),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     EventsModule,
     KafkaModule,
     AnalyticsModule,

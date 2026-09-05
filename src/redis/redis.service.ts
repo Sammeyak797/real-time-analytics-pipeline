@@ -3,7 +3,9 @@ import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
-  private readonly redis = new Redis('redis://localhost:6379');
+  private readonly redis = new Redis(
+    process.env.REDIS_URL ?? 'redis://localhost:6379',
+  );
 
   async onModuleInit() {
     await this.redis.ping();

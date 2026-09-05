@@ -5,7 +5,7 @@ import { Kafka, Producer } from 'kafkajs';
 export class KafkaService implements OnModuleInit, OnModuleDestroy {
   private readonly kafka = new Kafka({
     clientId: 'analytics-api',
-    brokers: ['localhost:9092'],
+    brokers: [process.env.KAFKA_BROKERS ?? 'localhost:9092'],
   });
 
   private readonly producer: Producer = this.kafka.producer();
