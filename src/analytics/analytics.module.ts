@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
+
 import { AnalyticsService } from './analytics.service';
+import { EventsModule } from '../events/events.module';
 
 @Module({
-  providers: [AnalyticsService]
+  imports: [EventsModule],
+  providers: [AnalyticsService],
 })
 export class AnalyticsModule {}
