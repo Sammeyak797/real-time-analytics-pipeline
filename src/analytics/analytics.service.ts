@@ -39,7 +39,41 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
 
         console.log('Received event:', event);
 
+        if (!event.eventId) {
+          console.log('Ignoring event without eventId');
+          return;
+        }
+
+        const isNewEvent = await this.redisService.markEventProcessed(
+          event.eventId,
+        );
+
+        if (!isNewEvent) {
+          console.log('Duplicate event ignored:', event.eventId);
+          return;
+        }
+
         await this.eventsService.saveEvent(event);
+
+        await this.redisService.increment('analytics:total_events');
+
+        switch (event.type) {
+          case 'page_view':
+            await this.redisService.increment('analytics:page_views');
+            break;
+
+          case 'purchase':
+            await this.redisService.increment('analytics:purchases');
+            break;
+
+          case 'signup':
+            await this.redisService.increment('analytics:signups');
+            break;
+        }
+
+        await this.redisService.addUniqueUser(event.userId);
+
+        console.log('Event processed successfully:', event.eventId);
 
         console.log('Event saved to MongoDB:', event.eventId);
 

@@ -37,6 +37,14 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     };
   }
 
+  async markEventProcessed(eventId: string) {
+    const key = `event:processed:${eventId}`;
+
+    const result = await this.redis.set(key, '1', 'EX', 86400, 'NX');
+
+    return result === 'OK';
+  }
+
   async onModuleDestroy() {
     await this.redis.quit();
   }
