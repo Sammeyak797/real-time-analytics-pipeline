@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { EventsModule } from './events/events.module';
 import { KafkaModule } from './kafka/kafka.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     EventsModule,
     KafkaModule,
     AnalyticsModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],
