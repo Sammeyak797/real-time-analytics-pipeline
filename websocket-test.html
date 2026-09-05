@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Analytics WebSocket Test</title>
+  </head>
+
+  <body>
+    <h1>Real-Time Analytics</h1>
+
+    <pre id="metrics">Waiting for data...</pre>
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+
+    <script>
+      const socket = io('http://localhost:3000');
+
+      socket.on('connect', () => {
+        console.log('Connected to WebSocket');
+      });
+
+      socket.on('analytics:update', (metrics) => {
+        document.getElementById('metrics').textContent = JSON.stringify(
+          metrics,
+          null,
+          2,
+        );
+
+        console.log('Analytics update:', metrics);
+      });
+    </script>
+  </body>
+</html>

@@ -2,6 +2,7 @@ import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Consumer, Kafka } from 'kafkajs';
 import { EventsService } from '../events/events.service';
 import { RedisService } from '../redis/redis.service';
+import { AnalyticsGateway } from '../websocket/analytics.gateway';
 
 @Injectable()
 export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
@@ -17,6 +18,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly eventsService: EventsService,
     private readonly redisService: RedisService,
+    private readonly analyticsGateway: AnalyticsGateway,
   ) {}
 
   async onModuleInit() {
@@ -94,6 +96,10 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         }
 
         await this.redisService.addUniqueUser(event.userId);
+
+        const metrics = await this.redisService.getMetrics();
+
+        this.analyticsGateway.emitAnalytics(metrics);
 
         console.log('Analytics updated:', event.eventId);
       },
